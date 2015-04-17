@@ -1,5 +1,5 @@
 === Robokassa Payment Gateway (saphali) ===
-Contributors: akurganow, loomst, saphali
+Contributors: saphali, akurganow, loomst
 Tags: robokassa, payment getaway, woo commerce, woocommerce, ecommerce
 Requires at least: 3.0
 Tested up to: 4.1.1
