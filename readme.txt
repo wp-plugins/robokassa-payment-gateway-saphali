@@ -2,7 +2,7 @@
 Contributors: saphali, akurganow, loomst
 Tags: robokassa, payment getaway, woo commerce, woocommerce, ecommerce
 Requires at least: 3.0
-Tested up to: 4.1.1
+Tested up to: 4.2.2
 Stable tag: trunk
 
 Allows you to use Robokassa payment gateway with the WooCommerce plugin.
@@ -37,6 +37,10 @@ Allows you to use Robokassa payment gateway with the WooCommerce plugin.
 
 
 == Changelog ==
+= 1.0.1 =
+* Реализована возможность, помимо рубля, использовать евро и доллар.
+* Реализована возможность задавать выбор между англ. и русским интерфейсом при оплате на Робокассе.
+
 = 1.0.0 =
 * [Совместимость c WooCommerce 2.3]
 * Убраны дополнительные фильтры для валюты рубля.
