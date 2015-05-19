@@ -124,6 +124,14 @@ class WC_ROBOKASSA extends WC_Payment_Gateway{
   * @return void
   */
 	function init_form_fields(){
+		$debug = __('Включить логирование (<code>woocommerce/logs/' . $this->id . '.txt</code>)', 'woocommerce');
+		if ( !version_compare( WOOCOMMERCE_VERSION, '2.0', '<' ) ) {
+			if ( version_compare( WOOCOMMERCE_VERSION, '2.2.0', '<' ) )
+			$debug = str_replace( $this->id, $this->id . '-' . sanitize_file_name( wp_hash( $this->id ) ), $debug );
+			elseif( function_exists('wc_get_log_file_path') ) {
+				$debug = str_replace( 'woocommerce/logs/' . $this->id . '.txt', wc_get_log_file_path( $this->id ) , $debug );
+			}
+		}
 		$this->form_fields = array(
 				'enabled' => array(
 					'title' => __('Включить/Выключить', 'woocommerce'),
@@ -165,7 +173,7 @@ class WC_ROBOKASSA extends WC_Payment_Gateway{
 				'debug' => array(
 					'title' => __('Debug', 'woocommerce'),
 					'type' => 'checkbox',
-					'label' => __('Включить логирование (<code>woocommerce/logs/paypal.txt</code>)', 'woocommerce'),
+					'label' => $debug,
 					'default' => 'no'
 				),
 				'description' => array(
