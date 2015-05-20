@@ -9,8 +9,8 @@ Allows you to use Robokassa payment gateway with the WooCommerce plugin.
 
 == Description ==
 
-После активации плагина через панель управления в WooCommerce прописывем
-Логин мерчат, пароль 1, пароль 2 узнать их можно в [личном кабинете robokassa](https://www.roboxchange.com/Environment/Partners/Login/Merchant/Registration.aspx)
+После активации плагина через панель управления в WooCommerce прописываем
+Логин мерчат (идентификатор магазина), пароль 1, пароль 2 узнать их можно в [личном кабинете robokassa](https://www.roboxchange.com/Environment/Partners/Login/Merchant/Registration.aspx)
 
 
 В Robokassa прописываем:
