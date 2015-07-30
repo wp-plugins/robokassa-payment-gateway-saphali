@@ -28,6 +28,7 @@ Allows you to use Robokassa payment gateway with the WooCommerce plugin.
 
 
 Если возникнут проблемы, [сообщите об ошибке](http://saphali.com/contacts)
+
 <strong>ВНИМАНИЕ!</strong>
 
 Вы можете подключить к магазину все самые популярные российские и украинские платежные системы:
