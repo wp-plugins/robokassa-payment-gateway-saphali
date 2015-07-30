@@ -1,8 +1,8 @@
 === Robokassa Payment Gateway (saphali) ===
-Contributors: saphali, akurganow, loomst
+Contributors: Saphali, akurganow, loomst
 Tags: robokassa, payment getaway, woo commerce, woocommerce, ecommerce
 Requires at least: 3.0
-Tested up to: 4.2.2
+Tested up to: 4.2.3
 Stable tag: trunk
 
 Allows you to use Robokassa payment gateway with the WooCommerce plugin.
@@ -28,7 +28,13 @@ Allows you to use Robokassa payment gateway with the WooCommerce plugin.
 
 
 Если возникнут проблемы, [сообщите об ошибке](http://saphali.com/contacts)
+<strong>ВНИМАНИЕ!</strong>
 
+Вы можете подключить к магазину все самые популярные российские и украинские платежные системы:
+QIWI, Приват24, LiqPay, WebMoney, Яндекс.Деньги, Интеркасса, PayPal для России и Украины, Z-payment, ChronoPay!
+Подробнее о плагинах платежных шлюзов: http://saphali.com/wordpress/payment-gateways
+
+Другие русские плагины для интернет-магазина на Woocommerce смотрите в нашем каталоге http://saphali.com/wordpress/woocommerce-plugins
 
 == Installation ==
 1. Убедитесь что у вас установлена посленяя версия плагина [WooCommerce](/www.woothemes.com/woocommerce)
