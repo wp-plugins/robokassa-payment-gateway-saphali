@@ -2,7 +2,7 @@
 Contributors: Saphali, akurganow, loomst
 Tags: robokassa, payment getaway, woo commerce, woocommerce, ecommerce
 Requires at least: 3.0
-Tested up to: 4.2.3
+Tested up to: 4.4
 Stable tag: trunk
 
 Allows you to use Robokassa payment gateway with the WooCommerce plugin.
@@ -44,6 +44,9 @@ QIWI, Приват24, LiqPay, WebMoney, Яндекс.Деньги, Интерк�
 
 
 == Changelog ==
+= 1.0.3 =
+* Изменен алгоримт проведения тестового платежа.
+
 = 1.0.2 =
 * Передача e-mail покупателя Робокассе при оплате.
 

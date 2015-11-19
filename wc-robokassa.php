@@ -3,7 +3,7 @@
   Plugin Name: Robokassa Payment Gateway (saphali)
   Plugin URI: 
   Description: Allows you to use Robokassa payment gateway with the WooCommerce plugin.
-  Version: 1.0.2
+  Version: 1.0.3
   Author: Alexander Kurganov, Saphali
   Author URI: http://saphali.com
  */
@@ -12,12 +12,6 @@
 
 if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
  
- /**
- * Add roubles in currencies
- * 
- * @since 0.3
- */
-
 
 /* Add a custom payment class to WC
   ------------------------------------------------------------ */
@@ -43,7 +37,7 @@ class WC_ROBOKASSA extends WC_Payment_Gateway{
 		$this->icon = apply_filters('woocommerce_robokassa_icon', ''.$plugin_dir.'robokassa.png');
 		$this->has_fields = false;
 		$this->liveurl = 'https://merchant.roboxchange.com/Index.aspx';
-		$this->testurl = 'http://test.robokassa.ru/Index.aspx';
+		//$this->testurl = 'http://test.robokassa.ru/Index.aspx';
 
 		// Load the settings
 		$this->init_form_fields();
@@ -127,9 +121,9 @@ class WC_ROBOKASSA extends WC_Payment_Gateway{
 		$debug = __('Включить логирование (<code>woocommerce/logs/' . $this->id . '.txt</code>)', 'woocommerce');
 		if ( !version_compare( WOOCOMMERCE_VERSION, '2.0', '<' ) ) {
 			if ( version_compare( WOOCOMMERCE_VERSION, '2.2.0', '<' ) )
-			$debug = str_replace( $this->id, $this->id . '-' . sanitize_file_name( wp_hash( $this->id ) ), $debug );
+			$debug = str_replace( $this->id , $this->id . '-' . sanitize_file_name( wp_hash( $this->id ) ), $debug );
 			elseif( function_exists('wc_get_log_file_path') ) {
-				$debug = str_replace( 'woocommerce/logs/' . $this->id . '.txt', wc_get_log_file_path( $this->id ) , $debug );
+				$debug = str_replace( 'woocommerce/logs/' . $this->id . '.txt', '<a href="/wp-admin/admin.php?page=wc-status&tab=logs&log_file=' . $this->id . '-' . sanitize_file_name( wp_hash( $this->id ) ) . '-log" target="_blank">' . wc_get_log_file_path( $this->id ) . '</a>' , $debug );
 			}
 		}
 		$this->form_fields = array(
@@ -217,17 +211,13 @@ class WC_ROBOKASSA extends WC_Payment_Gateway{
 		global $woocommerce;
 
 		$order = new WC_Order( $order_id );
+		$action_adr = $this->liveurl;
 
-		if ($this->testmode == 'yes'){
-			$action_adr = $this->testurl;
-		}
-		else{
-			$action_adr = $this->liveurl;
-		}
+
 
 		$out_summ = number_format($order->order_total, 2, '.', '');
-		if(empty($this->outsumcurrency))
-		$crc = $this->robokassa_merchant.':'.$out_summ.':'.$order_id.':'.$this->robokassa_key1;
+		if(empty($this->outsumcurrency) )
+		$crc = $this->robokassa_merchant.':'.$out_summ.':'.$order_id.':'.$this->robokassa_key1 ;
 		else
 		$crc = $this->robokassa_merchant.':'.$out_summ.':'.$order_id.':' . $this->outsumcurrency . ':'.$this->robokassa_key1;
 
@@ -238,27 +228,31 @@ class WC_ROBOKASSA extends WC_Payment_Gateway{
 				'InvId' => $order_id,
 				'SignatureValue' => md5($crc),
 				'Culture' => $this->lang,
-				//'Encoding' => 'utf-8',
+				'Encoding' => 'utf-8',
 			);
 		if(!empty($order->billing_email)) {
 			$args['Email'] = $order->billing_email;
 		}
+		if ($this->testmode == 'yes'){
+			//$action_adr = $this->testurl;
+			$args['IsTest'] = 1;
+		}
 		if(!empty($this->outsumcurrency)) {
 			$args['OutSumCurrency'] = $this->outsumcurrency;
 		}
-		$paypal_args = apply_filters('woocommerce_robokassa_args', $args);
+		$args = apply_filters('woocommerce_robokassa_args', $args);
 
 		$args_array = array();
-
+		
 		foreach ($args as $key => $value){
 			$args_array[] = '<input type="hidden" name="'.esc_attr($key).'" value="'.esc_attr($value).'" />';
 		}
 
-		return
+		 return
 			'<form action="'.esc_url($action_adr).'" method="POST" id="robokassa_payment_form">'."\n".
 			implode("\n", $args_array).
 			'<input type="submit" class="button alt" id="submit_robokassa_payment_form" value="'.__('Оплатить', 'woocommerce').'" /> <a class="button cancel" href="'.$order->get_cancel_order_url().'">'.__('Отказаться от оплаты & вернуться в корзину', 'woocommerce').'</a>'."\n".
-			'</form>';
+			'</form>'; 
 	}
 	
 	/**
@@ -266,7 +260,11 @@ class WC_ROBOKASSA extends WC_Payment_Gateway{
 	 **/
 	function process_payment($order_id){
 		$order = new WC_Order($order_id);
-
+		if ( !version_compare( WOOCOMMERCE_VERSION, '2.1.0', '<' ) )
+			return array(
+				'result' => 'success',
+				'redirect' => $order->get_checkout_payment_url( true )
+			);
 		return array(
 			'result' => 'success',
 			'redirect'	=> add_query_arg('order-pay', $order->id, add_query_arg('key', $order->order_key, get_permalink(woocommerce_get_page_id('pay'))))
@@ -291,6 +289,7 @@ class WC_ROBOKASSA extends WC_Payment_Gateway{
 			$sign = strtoupper(md5($out_summ.':'.$inv_id.':'.$this->robokassa_key2));
 		else
 			$sign = strtoupper(md5($out_summ.':'.$inv_id . ':'.$this->outsumcurrency.':'.$this->robokassa_key2));
+		
 		if ($posted['SignatureValue'] == strtoupper(md5($out_summ.':'.$inv_id.':'.$this->robokassa_key2)) || $posted['SignatureValue'] == $sign)
 		{
 			echo 'OK'.$inv_id;
@@ -310,7 +309,7 @@ class WC_ROBOKASSA extends WC_Payment_Gateway{
 			@ob_clean();
 
 			$_POST = stripslashes_deep($_POST);
-
+			
 			if ($this->check_ipn_request_is_valid($_POST)){
         do_action('valid-robokassa-standard-ipn-reques', $_POST);
 			}
@@ -321,7 +320,7 @@ class WC_ROBOKASSA extends WC_Payment_Gateway{
 		else if (isset($_GET['robokassa']) AND $_GET['robokassa'] == 'success'){
 			$inv_id = $_POST['InvId'];
 			$order = new WC_Order($inv_id);
-			$order->update_status('processing', __('Платеж успешно оплачен', 'woocommerce'));
+			
 			WC()->cart->empty_cart();
 
 			wp_redirect( $this->get_return_url( $order ) );
@@ -331,7 +330,7 @@ class WC_ROBOKASSA extends WC_Payment_Gateway{
 			$order = new WC_Order($inv_id);
 			$order->update_status('failed', __('Платеж не оплачен', 'woocommerce'));
 
-			wp_redirect($order->get_cancel_order_url());
+			wp_redirect( str_replace('&amp;', '&', $order->get_cancel_order_url() ) );
 			exit;
 		}
 
